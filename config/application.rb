@@ -20,12 +20,7 @@ module Gitscm
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    config.assets.enabled = true
-    config.assets.initialize_on_precompile = false
-
-    initializer(:load_constants) do
-      require Rails.root.join("lib/constants.rb").to_s
-    end
-
+    # Do not swallow errors in after_commit/after_rollback callbacks.
+    config.active_record.raise_in_transactional_callbacks = true
   end
 end

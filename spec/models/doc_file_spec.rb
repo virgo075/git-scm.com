@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe DocFile do
+RSpec.describe DocFile, type: :model do
 
   it { should have_many :doc_versions }
 

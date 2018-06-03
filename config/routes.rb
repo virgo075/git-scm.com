@@ -1,4 +1,4 @@
-Gitscm::Application.routes.draw do
+Rails.application.routes.draw do
 
   constraints(:host => 'whygitisbetterthanx.com') do
     root :to => 'site#redirect_wgibtx', as: :whygitisbetterthanx
@@ -24,7 +24,6 @@ Gitscm::Application.routes.draw do
   get "/docs/:file.html" => "doc#man", :as => :doc_file_html, :file => /[\w\-\.]+/
   get "/docs/:file" => "doc#man", :as => :doc_file, :file => /[\w\-\.]+/
   get "/docs/:file/:version" => "doc#man", :version => /[^\/]+/
-  get "/test" => "doc#test"
   get "/doc/ext" => "doc#ext"
 
   %w{man ref git}.each do |path|
@@ -37,14 +36,13 @@ Gitscm::Application.routes.draw do
     get "/ch:chapter-:section.html"    => "books#chapter"
     get "/:lang/ch:chapter-:section.html" => "books#chapter"
     get "/index"                          => redirect("/book")
-    get "/commands"                       => "books#commands"
+    get "/commands"                       => redirect("/docs")
     get "/:lang/v:edition"                => "books#show"
     get "/:lang/v:edition/:slug"          => "books#section"
     get "/:lang/v:edition/:chapter/:link" => "books#link", chapter: /(ch|app)\d+/
     get "/:lang"                          => "books#show", as: :lang
-    get "/:lang/:slug"                    => "books#section"
+    get "/:lang/:slug"                    => "books#section", as: :slug
   end
-  post "/update"   => "books#update"
 
   get "/download"               => "downloads#index"
   get "/download/:platform"     => "downloads#download"
@@ -59,19 +57,10 @@ Gitscm::Application.routes.draw do
     end
   end
 
-  get "/:year/:month/:day/:slug" => "blog#post",  :year   => /\d{4}/,
-                                                    :month  => /\d{2}/,
-                                                    :day    => /\d{2}/
-
-  get "/blog/:year/:month/:day/:slug" => "blog#post",  :year   => /\d{4}/,
-                                                    :month  => /\d{2}/,
-                                                    :day    => /\d{2}/
-
-  get "/blog.rss" => "blog#feed"
   get "/blog" => "blog#index"
-
-  get "/publish"  => "doc#book_update"
-  post "/related" => "doc#related_update"
+  get "/blog/*post" => redirect("/blog")
+  get "/:year/:month/:day/:slug" => redirect("/blog"),
+    :year => /\d{4}/, :month => /\d{2}/, :day => /\d{2}/
 
   get "/about" => "about#index"
   get "/about/:section" => "about#index"
@@ -81,22 +70,21 @@ Gitscm::Application.routes.draw do
 
   get "/community" => "community#index"
 
-  get "/admin" => "site#admin"
-
   get "/search" => "site#search"
   get "/search/results" => "site#search_results"
 
-  # mapping for jasons mocks
-  get "/documentation" => "doc#index"
-  get "/documentation/reference" => "doc#ref"
-  get "/documentation/reference/:file.html" => "doc#man"
-  get "/documentation/book" => "doc#book"
-  get "/documentation/videos" => "doc#videos"
-  get "/documentation/external-links" => "doc#ext"
+  # historical synonyms
+  get "/documentation" => redirect("/doc")
+  get "/documentation/reference" => redirect("/docs")
+  get "/documentation/reference/:file.html" => redirect {|path_params, req| "/docs/#{path_params[:file]}" }
+  get "/documentation/book" => redirect("/book")
+  get "/documentation/videos" => redirect("/videos")
+  get "/documentation/external-links" => redirect("doc/ext")
 
   get "/course/svn" => "site#svn"
   get "/sfc" => "site#sfc"
-  get "/trademark" => "site#trademark"
+  get "/site" => "site#about"
+  get "/trademark" => redirect("/about/trademark")
 
   get "/contributors" => redirect("https://github.com/git/git/graphs/contributors")
 

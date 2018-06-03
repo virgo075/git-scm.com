@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe Download do
+RSpec.describe Download, type: :model do
 
   let(:version) { Fabricate(:version) }
   let(:download) { Fabricate(:download, version: version) }
@@ -8,11 +8,11 @@ describe Download do
   it { should belong_to :version }
 
   it "should have url" do
-    download.url.should == "http://git-scm.com/git.zip"
+    expect(download.url).to eql('http://git-scm.com/git.zip')
   end
-    
+
   it "should have version" do
-    download.version == version
+    expect(download.version).to eql(version)
   end
 
 end

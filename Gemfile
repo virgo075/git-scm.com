@@ -1,26 +1,19 @@
 source 'https://rubygems.org'
-#ruby "2.1.2"
+ruby "2.4.2"
 
-gem 'rails', '4.2'
-gem 'rails_12factor', group: :production
+gem 'rails', '4.2.10'
 
-gem 'asciidoctor'
-gem 'dalli'
-gem 'exceptional'
+gem 'asciidoctor', '>=1.5.4'
 gem 'faraday'
 gem 'faraday_middleware'
-gem 'memcachier'
-gem 'newrelic_rpm'
 gem 'octokit'
-gem "pg"
-gem 'rack-timeout'
+gem 'puma'
 gem 'tilt'
 gem 'tire'
-gem 'unicorn'
+gem 'iso8601'
 
 gem 'json'
 gem 'yajl-ruby'
-gem 'haml'
 gem 'netrc'
 gem 'launchy'
 gem 'rubyzip'
@@ -30,26 +23,22 @@ gem 'nokogiri'
 
 # Assets
 gem 'compass-rails'
-gem 'coffee-rails'
-gem 'jquery-rails'
-gem 'less-rails-bootstrap'
 gem 'sass-rails', '4.0.3'
-gem 'therubyracer'
-gem 'uglifier'
+gem 'uglifier', '3.2.0'
 
 group :development do
   gem "awesome_print"
   gem "better_errors"
   gem "binding_of_caller"
   gem "foreman"
-  gem "taps"
 end
 
 group :development, :test do
   gem 'dotenv-rails'
   gem "sqlite3"
-  gem 'byebug'
+  gem 'pry-byebug'
   gem 'ruby-prof'
+  gem 'bullet'
 end
 
 group :test do
@@ -58,5 +47,13 @@ group :test do
   gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'webmock'
+  gem 'vcr'
   gem 'rails-perftest'
+end
+
+group :production do
+  gem 'pg', '0.21.0'
+  gem 'rack-timeout'
+  gem 'rails_12factor'
+  gem 'redis-rails'
 end

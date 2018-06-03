@@ -3,10 +3,8 @@ require 'octokit'
 require 'digest/sha1'
 
 # export GITBOOK_DIR=../../writing/progit/
-# export UPDATE_TOKEN=token
 # bundle exec rake genbook GENLANG=en
 
-CONTENT_SERVER = ENV["CONTENT_SERVER"] || "http://localhost:3000"
 SCRIPT_SHA = Digest::SHA1.hexdigest(File.open('lib/tasks/book.rake', 'r').read)
 
 def generate_pages(lang, chapter, content, sha)
@@ -60,7 +58,7 @@ def generate_pages(lang, chapter, content, sha)
 
   section = 0
   # create book (if needed)
-  book = Book.where(:code => lang).first_or_create
+  book = Book.where(:edition => 1, :code => lang).first_or_create
 
   # create chapter (if needed)
   schapter = book.chapters.where(:number => chapter).first_or_create
@@ -139,7 +137,7 @@ task :remote_genbook => :environment do
 
     skip = false
 
-    if book = Book.where(:code => lang).first
+    if book = Book.where(:edition => 1, :code => lang).first
       c = book.chapters.where(:number => chapter_number.to_i).first
       if c && (c.sha == (tree.sha + SCRIPT_SHA))
         skip = true
@@ -160,4 +158,3 @@ task :remote_genbook => :environment do
   end
   #p book
 end
-

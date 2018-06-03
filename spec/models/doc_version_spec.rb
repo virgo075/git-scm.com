@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe DocVersion do
+RSpec.describe DocVersion, type: :model do
 
   it { should belong_to :doc }
   it { should belong_to :version }
@@ -12,8 +12,9 @@ describe DocVersion do
     docs = range.map{|i| Fabricate(:doc, :plain => "Doc #{i}")}
     vers = range.map{|i| Fabricate(:version, :name => "#{i}.0", :vorder => Version.version_to_num("#{i}.0"))}
     dver = range.map{|i| Fabricate(:doc_version, :doc_file => file, :version => vers[i], :doc => docs[i])}
-    dv = DocVersion.latest_for('test-command')
-    docs[3].should == dv.doc
+
+    dv = DocVersion.latest_version
+    expect(docs[3]).to eql(dv.doc)
   end
 
   it 'finds a specific version' do
@@ -23,7 +24,7 @@ describe DocVersion do
     vers = range.map{|i| Fabricate(:version, :name => "v#{i}.0")}
     dver = range.map{|i| Fabricate(:doc_version, :doc_file => file, :version => vers[i], :doc => docs[i])}
 
-    dv = DocVersion.for_version('test-command', 'v2.0')
-    docs[2].should == dv.doc
+    dv = DocVersion.for_version('v2.0')
+    expect(docs[2]).to eql(dv.doc)
   end
 end

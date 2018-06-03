@@ -21,11 +21,6 @@ class Section < ActiveRecord::Base
   has_many :sections, :through => :chapter
   has_many :xrefs
 
-  def get_related(limit = 10)
-    ri = RelatedItem.where(:related_type => 'book', :related_id => slug).order('score DESC').limit(limit)
-    ri.sort { |a, b| a.content_type <=> b.content_type }
-  end
-
   def set_slug
     if self.title
       title = (self.chapter.title + '-' + self.title)
@@ -39,12 +34,12 @@ class Section < ActiveRecord::Base
     lang = self.book.code
     prev_number = self.number - 1
     if section = self.sections.where(:number => prev_number).first
-      return "/book/#{lang}/#{ERB::Util.url_encode(section.slug)}"
+      return "/book/#{lang}/v#{self.book.edition}/#{ERB::Util.url_encode(section.slug)}"
     else
       # find previous chapter
       if ch = self.chapter.prev
         if section = ch.last_section
-          return "/book/#{lang}/#{ERB::Util.url_encode(section.slug)}"
+          return "/book/#{lang}/v#{self.book.edition}/#{ERB::Util.url_encode(section.slug)}"
         end
       end
     end
